@@ -12,103 +12,220 @@ namespace Calculator
 {
     public partial class Form2 : Form
     {
+        private string ketQua = "0";
+        private string Memory = "0";
+        private bool activeMemory = false;
+        private bool thucHienPhepTinh = false;
+        // quy uoc false la chua co nhan bat ki dau +, -, x, /
+        private bool nhanDauPhay = false;
+        private bool tonTaiDauPhay = false;
+        private string lastKey = "";
         public Form2()
         {
             InitializeComponent();
         }
 
-        private bool thucHienPhepTinh = false;
-        // quy uoc false la chua co nhan bat ki dau +, -, x, /
         private void Form2_Load(object sender, EventArgs e)
         {
 
         }
 
+        private void xuLiKhiNhanSo(string number)
+        {
+            if (ketQua == "0") ketQua = "";
+            if (!thucHienPhepTinh) ketQua += number;
+            if (ketQua == "-00") ketQua = "-0";
+            changeResultScreen();
+            lastKey = number;
+        }
+
         private void button16_Click(object sender, EventArgs e)
         {
-            if (btnResult.Text == "0") btnResult.Text = "";
-            if (!thucHienPhepTinh) btnResult.Text += "1";
+            xuLiKhiNhanSo("1");
         }
 
         private void button15_Click(object sender, EventArgs e)
         {
-            if (btnResult.Text == "0") btnResult.Text = "";
-            if (!thucHienPhepTinh) btnResult.Text += "2";
+            xuLiKhiNhanSo("2");
         }
 
         private void button14_Click(object sender, EventArgs e)
         {
-            if (btnResult.Text == "0") btnResult.Text = "";
-            if (!thucHienPhepTinh) btnResult.Text += "3";
+            xuLiKhiNhanSo("3");
         }
 
         private void button12_Click(object sender, EventArgs e)
         {
-            if (btnResult.Text == "0") btnResult.Text = "";
-            if (!thucHienPhepTinh) btnResult.Text += "4";
+            xuLiKhiNhanSo("4");
         }
 
         private void button11_Click(object sender, EventArgs e)
         {
-            if (btnResult.Text == "0") btnResult.Text = "";
-            if (!thucHienPhepTinh) btnResult.Text += "5";
+            xuLiKhiNhanSo("5");
         }
 
         private void button10_Click(object sender, EventArgs e)
         {
-            if (btnResult.Text == "0") btnResult.Text = "";
-            if (!thucHienPhepTinh) btnResult.Text += "6";
+            xuLiKhiNhanSo("6");
         }
 
         private void button8_Click(object sender, EventArgs e)
         {
-            if (btnResult.Text == "0") btnResult.Text = "";
-            if (!thucHienPhepTinh) btnResult.Text += "7";
+            xuLiKhiNhanSo("7");
         }
 
         private void button7_Click(object sender, EventArgs e)
         {
-            if (btnResult.Text == "0") btnResult.Text = "";
-            if (!thucHienPhepTinh) btnResult.Text += "8";
+            xuLiKhiNhanSo("8");
         }
 
         private void button6_Click(object sender, EventArgs e)
         {
-            if (btnResult.Text == "0") btnResult.Text = "";
-            if (!thucHienPhepTinh) btnResult.Text += "9";
+            xuLiKhiNhanSo("9");
         }
 
         private void button19_Click(object sender, EventArgs e)
         {
-            if (btnResult.Text == "0") btnResult.Text = "";
-            if (!thucHienPhepTinh) btnResult.Text += "0";
+            xuLiKhiNhanSo("0");
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
-            if (!String.IsNullOrEmpty(btnResult.Text))
-            {
-                if (btnResult.Text.Length == 1)
-                {
-                    btnResult.Text = "0";
-                }
-                else
-                {
-                    StringBuilder temp = new StringBuilder(btnResult.Text);
-                    temp.Remove(temp.Length - 1, 1);
-                    btnResult.Text = temp.ToString();
-                }
-            }
+            if (ketQua.Length == 1)
+                ketQua = "0";
+            else if (ketQua == "-0," || (ketQua.Length == 2 && ketQua[0] == '-')) ketQua = "0";
+            else ketQua = ketQua.Remove(ketQua.Length - 1, 1);
+            changeResultScreen();
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-            btnResult.Text = "0";
+            ketQua = "0";
+            changeResultScreen();
+            lastKey = "clear";
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            btnResult.Text = "0";
+            ketQua = "0";
+            changeResultScreen();
+            lastKey = "clearEntry";
+        }
+
+        private void button9_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnChangeSigned_Click(object sender, EventArgs e)
+        {
+            if (ketQua != "0")
+            {
+                if (ketQua[0] == '-') ketQua = ketQua.Substring(1);
+                else ketQua = "-" + ketQua;
+            }
+            changeResultScreen();
+            lastKey = "changeSigned";
+        }
+
+        private void btnResultScreen_TextChanged(object sender, EventArgs e)
+        {
+        }
+
+        private void btnFloat_Click(object sender, EventArgs e)
+        {
+            if (ketQua.IndexOf(',') == -1)
+                ketQua += ",";
+            changeResultScreen();
+            lastKey = "float";
+        }
+
+        private void changeResultScreen()
+        {
+            btnResultScreen.Text = ketQua;
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            Memory = (double.Parse(Memory) + double.Parse(ketQua)).ToString();
+            EnableMemory();
+            lastKey = "memoryAdd";
+        }
+
+        private void button6_Click_1(object sender, EventArgs e)
+        {
+            ketQua = Memory;
+            changeResultScreen();
+            lastKey = "memoryReset";
+        }
+
+        private void button8_Click_1(object sender, EventArgs e)
+        {
+            Memory = "0";
+            activeMemory = false;
+            button8.Enabled = false;
+            button6.Enabled = false;
+            button10.Enabled = false;
+            lastKey = "memoryClear";
+        }
+
+        private void button7_Click_1(object sender, EventArgs e)
+        {
+            Memory = (double.Parse(Memory) - double.Parse(ketQua)).ToString();
+            EnableMemory();
+            lastKey = "memorySubtract"
+        }
+
+        private void button9_Click_1(object sender, EventArgs e)
+        {
+            Memory = ketQua;
+            EnableMemory();
+            lastKey = "memorySave";
+        }
+
+        private void EnableMemory() {
+            if (!activeMemory)
+            {
+                button8.Enabled = true;
+                button6.Enabled = true;
+                button10.Enabled = true;
+            }
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            ketQua = (1 / double.Parse(ketQua)).ToString();
+            changeResultScreen();
+            lastKey = "divideFor1";
+        }
+
+        private void button2_Click_1(object sender, EventArgs e)
+        {
+            ketQua = (double.Parse(ketQua) * double.Parse(ketQua)).ToString();
+            changeResultScreen();
+            lastKey = "sqr";
+        }
+
+        private void button3_Click_1(object sender, EventArgs e)
+        {
+            ketQua = (Math.Sqrt(double.Parse(ketQua))).ToString();
+            changeResultScreen();
+            lastKey = "sqrt";
+        }
+
+        private void btnMultiphy_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button10_Click_1(object sender, EventArgs e)
+        {
+
         }
     }
 }
